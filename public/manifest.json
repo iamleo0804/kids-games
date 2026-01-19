@@ -1,0 +1,22 @@
+{
+  "name": "兒童大冒險 - 學習遊戲",
+  "short_name": "兒童大冒險",
+  "description": "iPad 兒童學習遊戲，包含數學、英文、中文學習挑戰。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f8ff",
+  "theme_color": "#60c5ea",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

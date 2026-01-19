@@ -1,0 +1,89 @@
+.level-select-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  max-width: 1000px;
+  width: 100%;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.level-header {
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  background: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.back-button:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.level-title {
+  font-size: 3rem;
+  color: var(--text-main);
+}
+
+.level-subtitle {
+  font-size: 1.5rem;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.level-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+}
+
+.level-card-wrapper {
+  width: 100%;
+}
+
+.level-card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.level-name {
+  display: block;
+  font-size: 1.8rem;
+}
+
+.level-label {
+  display: block;
+  font-size: 1rem;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .level-grid {
+    flex-direction: row;
+    justify-content: center;
+  }
+}

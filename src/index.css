@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+
+:root {
+  /* 設計系統：兒童友善色彩 (鮮豔 HSL) */
+  --color-primary: hsl(198, 93%, 60%);    /* 天藍 */
+  --color-secondary: hsl(35, 100%, 60%);  /* 橘黃 */
+  --color-success: hsl(145, 63%, 49%);    /* 嫩綠 */
+  --color-danger: hsl(354, 85%, 63%);     /* 珊瑚紅 */
+  --color-accent: hsl(280, 67%, 60%);     /* 紫色 */
+  
+  --bg-main: hsl(210, 50%, 98%);
+  --text-main: hsl(210, 20%, 20%);
+  --text-light: hsl(210, 10%, 45%);
+
+  /* 兒童友善：圓潤度與陰影 */
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 15px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.1);
+  
+  /* 立體感按鈕效果 */
+  --btn-shadow: 0 6px 0 rgba(0, 0, 0, 0.15);
+  --btn-active-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
+
+  /* 字體 */
+  --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent; /* 移除 iPad 點擊藍色框 */
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* 防止 iPad 滾動回彈 */
+  font-family: var(--font-family);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+body {
+  /* 處理 iPad 安全區域 */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  user-select: none; /* 防止兒童長按選取文字 */
+}
+
+h1, h2, h3 {
+  font-weight: 800;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* 基礎動畫 */
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-bounce {
+  animation: bounce 0.3s ease-in-out;
+}

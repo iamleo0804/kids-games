@@ -1,0 +1,112 @@
+.game-button {
+  position: relative;
+  display: inline-block;
+  padding: 0;
+  border: none;
+  background: transparent;
+  transition: transform 0.1s ease;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.game-button:active {
+  transform: translateY(4px);
+}
+
+.game-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.game-button__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: var(--button-bg, var(--color-primary));
+  color: white;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2);
+  transition: all 0.1s ease;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.game-button__shadow {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--button-shadow-color, hsla(198, 93%, 30%, 0.5));
+  border-radius: var(--radius-md);
+  z-index: 1;
+}
+
+/* Variants */
+.game-button--primary {
+  --button-bg: var(--color-primary);
+  --button-shadow-color: hsl(198, 93%, 40%);
+}
+
+.game-button--secondary {
+  --button-bg: var(--color-secondary);
+  --button-shadow-color: hsl(35, 100%, 40%);
+}
+
+.game-button--success {
+  --button-bg: var(--color-success);
+  --button-shadow-color: hsl(145, 63%, 35%);
+}
+
+.game-button--danger {
+  --button-bg: var(--color-danger);
+  --button-shadow-color: hsl(354, 85%, 45%);
+}
+
+.game-button--accent {
+  --button-bg: var(--color-accent);
+  --button-shadow-color: hsl(280, 67%, 45%);
+}
+
+/* Sizes */
+.game-button--md .game-button__content {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  min-width: 120px;
+}
+
+.game-button--lg .game-button__content {
+  padding: 20px 40px;
+  font-size: 1.5rem;
+  border-radius: var(--radius-lg);
+  min-width: 200px;
+}
+
+.game-button--xl .game-button__content {
+  padding: 30px 60px;
+  font-size: 2rem;
+  border-radius: var(--radius-lg);
+  min-width: 280px;
+}
+
+.game-button--lg .game-button__shadow,
+.game-button--xl .game-button__shadow {
+  border-radius: var(--radius-lg);
+  top: 6px;
+}
+
+/* Icon style */
+.game-button__icon {
+  display: flex;
+  align-items: center;
+  font-size: 1.25em;
+}
+
+.game-button:active .game-button__content {
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+}
