@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import GameButton from "../../components/ui/GameButton";
 import {
-  LuArrowLeft,
+  LuHouse,
   LuVolume2,
   LuCheck,
   LuX,
@@ -181,23 +181,39 @@ const QuizPlay: React.FC = () => {
   return (
     <div className="quiz-play-page">
       <header className="quiz-header">
-        <button className="back-button" onClick={() => navigate(-1)}>
-          <LuArrowLeft /> 離開
-        </button>
-        <div className="progress-container">
-          <div className="progress-bar">
-            <div
-              className="progress-fill"
-              style={{
-                width: `${((currentIndex + 1) / questions.length) * 100}%`,
-              }}
-            ></div>
-          </div>
-          <span className="progress-text">
-            第 {currentIndex + 1} / {questions.length} 題
-          </span>
+        <div className="header-left-part">
+          <div className="score-badge">分：{score}</div>
         </div>
-        <div className="score-badge">分：{score}</div>
+
+        <div className="header-center-part">
+          <div className="progress-container">
+            <div className="progress-bar">
+              <div
+                className="progress-fill"
+                style={{
+                  width: `${((currentIndex + 1) / questions.length) * 100}%`,
+                }}
+              ></div>
+            </div>
+            <span className="progress-text">
+              第 {currentIndex + 1} / {questions.length} 題
+            </span>
+          </div>
+        </div>
+
+        <div className="header-right-part">
+          <div className="header-actions">
+            <GameButton
+              variant="secondary"
+              size="md"
+              onClick={() => navigate("/")}
+              className="exit-btn-circle"
+              aria-label="回首頁"
+            >
+              <LuHouse size={24} />
+            </GameButton>
+          </div>
+        </div>
       </header>
 
       <main className="quiz-main">
