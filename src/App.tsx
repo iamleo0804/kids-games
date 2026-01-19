@@ -13,7 +13,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/level/:subjectId" element={<LevelSelect />} />
-            <Route path="/quiz/:subjectId/:levelId" element={<QuizPlay />} />
+            <Route
+              path="/quiz/:subjectId/:operation/:levelNumber"
+              element={<QuizPlay />}
+            />
             <Route path="/stickers" element={<Stickers />} />
             {/* 更多路徑將在此加入 */}
           </Routes>

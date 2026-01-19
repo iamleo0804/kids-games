@@ -10,21 +10,19 @@ import {
 } from "react-icons/lu";
 import { INITIAL_STICKERS } from "../../types/sticker";
 import { addSticker } from "../../utils/stickerStorage";
+import { saveLevelProgress } from "../../utils/progressStorage";
+import {
+  generateMathQuestions,
+  type Question,
+} from "../../utils/mathGenerator";
 import { playCorrectSound, playIncorrectSound } from "../../utils/audio";
 import "./QuizPlay.css";
 
-interface Question {
-  id: string;
-  prompt: string;
-  options: string[];
-  correctAnswer: string;
-  audioText: string;
-}
-
 const QuizPlay: React.FC = () => {
-  const { subjectId, levelId } = useParams<{
+  const { subjectId, operation, levelNumber } = useParams<{
     subjectId: string;
-    levelId: string;
+    operation: string;
+    levelNumber: string;
   }>();
   const navigate = useNavigate();
 
@@ -38,115 +36,34 @@ const QuizPlay: React.FC = () => {
     null,
   );
 
-  // 模擬題目產生器 (實際開發會更複雜)
   useEffect(() => {
-    const generated: Question[] = [];
-    const usedEquations = new Set<string>();
-
-    while (generated.length < 10) {
-      if (subjectId === "math") {
-        let num1: number,
-          num2: number,
-          ans: number,
-          operator: string,
-          audioOp: string;
-
-        if (levelId === "k") {
-          // 幼稚園：10以內加法
-          num1 = Math.floor(Math.random() * 5) + 1;
-          num2 = Math.floor(Math.random() * 5) + 1;
-          ans = num1 + num2;
-          operator = "+";
-          audioOp = "加";
-        } else if (levelId === "g1") {
-          // 一年級：20以內加減法
-          const isSub = Math.random() > 0.5;
-          if (isSub) {
-            num1 = Math.floor(Math.random() * 10) + 10; // 10-20
-            num2 = Math.floor(Math.random() * 10) + 1; // 1-10
-            ans = num1 - num2;
-            operator = "-";
-            audioOp = "減";
-          } else {
-            num1 = Math.floor(Math.random() * 10) + 1;
-            num2 = Math.floor(Math.random() * 10) + 1;
-            ans = num1 + num2;
-            operator = "+";
-            audioOp = "加";
-          }
-        } else {
-          // 二年級：50以內加減法或乘法
-          const type = Math.floor(Math.random() * 3);
-          if (type === 0) {
-            // 加法
-            num1 = Math.floor(Math.random() * 25) + 1;
-            num2 = Math.floor(Math.random() * 25) + 1;
-            ans = num1 + num2;
-            operator = "+";
-            audioOp = "加";
-          } else if (type === 1) {
-            // 減法
-            num1 = Math.floor(Math.random() * 50) + 1;
-            num2 = Math.floor(Math.random() * num1) + 1;
-            ans = num1 - num2;
-            operator = "-";
-            audioOp = "減";
-          } else {
-            // 簡單乘法 (2, 3, 5, 10)
-            const multipliers = [2, 3, 5, 10];
-            num1 = multipliers[Math.floor(Math.random() * multipliers.length)];
-            num2 = Math.floor(Math.random() * 9) + 1;
-            ans = num1 * num2;
-            operator = "×";
-            audioOp = "乘以";
-          }
-        }
-
-        const equation = `${num1}${operator}${num2}`;
-        if (usedEquations.has(equation)) continue;
-        usedEquations.add(equation);
-
-        // 產生干擾選項
-        const wrongOptions = new Set<number>();
-        while (wrongOptions.size < 3) {
-          const offset = Math.floor(Math.random() * 5) + 1;
-          const sign = Math.random() > 0.5 ? 1 : -1;
-          const wrong = ans + offset * sign;
-          if (wrong !== ans && wrong >= 0) {
-            wrongOptions.add(wrong);
-          }
-        }
-
-        const options = [ans, ...Array.from(wrongOptions)]
-          .sort(() => Math.random() - 0.5)
-          .map(String);
-        generated.push({
-          id: `m-${generated.length}`,
-          prompt: `${num1} ${operator} ${num2} = ?`,
-          audioText: `${num1} ${audioOp} ${num2} 等於多少？`,
-          options,
-          correctAnswer: String(ans),
-        });
-      } else {
-        break;
-      }
+    if (subjectId === "math" && operation && levelNumber) {
+      const generated = generateMathQuestions(
+        operation,
+        parseInt(levelNumber, 10),
+      );
+      setQuestions(generated);
     }
-    setQuestions(generated);
-  }, [subjectId, levelId]);
+  }, [subjectId, operation, levelNumber]);
 
   const currentQuestion = questions[currentIndex];
 
   const handleSpeak = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = subjectId === "english" ? "en-US" : "zh-TW";
+    utterance.lang = "zh-TW";
     window.speechSynthesis.speak(utterance);
   };
 
-  // 自動播放已移除，僅在點選按鈕時播放
-
   useEffect(() => {
     if (isCompleted) {
-      if (subjectId === "math") {
+      if (subjectId === "math" && operation && levelNumber) {
+        if (score >= 80) {
+          saveLevelProgress(
+            subjectId,
+            operation,
+            parseInt(levelNumber, 10) + 1,
+          );
+        }
         const added = addSticker("math-star-1");
         if (added) setNewStickerAwarded("math-star-1");
       }
@@ -155,7 +72,7 @@ const QuizPlay: React.FC = () => {
         if (added) setNewStickerAwarded("perfect-score");
       }
     }
-  }, [isCompleted, score, subjectId]);
+  }, [isCompleted, score, subjectId, operation, levelNumber]);
 
   const awardedSticker = INITIAL_STICKERS.find(
     (s) => s.id === newStickerAwarded,
@@ -180,6 +97,37 @@ const QuizPlay: React.FC = () => {
       setIsAnswered(false);
     } else {
       setIsCompleted(true);
+    }
+  };
+
+  const handleRestart = () => {
+    setCurrentIndex(0);
+    setScore(0);
+    setSelectedOption(null);
+    setIsAnswered(false);
+    setIsCompleted(false);
+    setNewStickerAwarded(null);
+    if (subjectId === "math" && operation && levelNumber) {
+      const generated = generateMathQuestions(
+        operation,
+        parseInt(levelNumber, 10),
+      );
+      setQuestions(generated);
+    }
+  };
+
+  const handleNextLevel = () => {
+    if (levelNumber) {
+      const nextLevel = parseInt(levelNumber, 10) + 1;
+      navigate(`/quiz/${subjectId}/${operation}/${nextLevel}`, {
+        replace: true,
+      });
+      setCurrentIndex(0);
+      setScore(0);
+      setSelectedOption(null);
+      setIsAnswered(false);
+      setIsCompleted(false);
+      setNewStickerAwarded(null);
     }
   };
 
@@ -209,9 +157,21 @@ const QuizPlay: React.FC = () => {
             </p>
           </div>
         )}
-        <GameButton size="xl" variant="primary" onClick={() => navigate("/")}>
-          回首頁
-        </GameButton>
+
+        <div className="result-actions">
+          <GameButton size="xl" variant="primary" onClick={() => navigate("/")}>
+            回首頁
+          </GameButton>
+          {score >= 80 ? (
+            <GameButton size="xl" variant="success" onClick={handleNextLevel}>
+              前進下一關！
+            </GameButton>
+          ) : (
+            <GameButton size="xl" variant="secondary" onClick={handleRestart}>
+              再試一次
+            </GameButton>
+          )}
+        </div>
       </div>
     );
   }
@@ -282,7 +242,7 @@ const QuizPlay: React.FC = () => {
               </div>
             ) : (
               <div className="feedback feedback--incorrect">
-                <LuX /> 沒關係，內容是 {currentQuestion.correctAnswer}
+                <LuX /> 沒關係，答案是 {currentQuestion.correctAnswer}
               </div>
             )}
             <GameButton variant="secondary" size="lg" onClick={handleNext}>

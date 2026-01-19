@@ -28,4 +28,11 @@ export const INITIAL_STICKERS: Sticker[] = [
     description: "嘗試過所有難度",
     rarity: "epic",
   },
+  {
+    id: "english-hero",
+    name: "英文小英雄",
+    image: "english-hero.png",
+    description: "完成一次英文測驗",
+    rarity: "common",
+  },
 ];

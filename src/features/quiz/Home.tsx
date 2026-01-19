@@ -12,8 +12,15 @@ const Home: React.FC = () => {
       icon: <LuCalculator />,
       variant: "primary" as const,
     },
+    /*
+    {
+      id: "english",
+      name: "英文大冒險",
+      icon: <LuLanguages />,
+      variant: "accent" as const,
+    },
+    */
     // { id: 'chinese', name: '中文小博士', icon: <LuBookOpen />, variant: 'success' as const },
-    // { id: 'english', name: '英文大冒險', icon: <LuLanguages />, variant: 'accent' as const },
   ];
 
   const navigate = useNavigate();

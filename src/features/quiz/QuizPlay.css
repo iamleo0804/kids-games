@@ -155,7 +155,16 @@
   font-size: 1.2rem;
 }
 
-/* Result Page */
+.result-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 24px;
+}
+
 .quiz-result-page {
   display: flex;
   flex-direction: column;
