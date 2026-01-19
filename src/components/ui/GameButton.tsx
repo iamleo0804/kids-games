@@ -1,11 +1,12 @@
-import React from 'react';
-import './GameButton.css';
+import React from "react";
+import { playClickSound } from "../../utils/audio";
+import "./GameButton.css";
 
 interface GameButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'accent';
-  size?: 'md' | 'lg' | 'xl';
+  variant?: "primary" | "secondary" | "success" | "danger" | "accent";
+  size?: "md" | "lg" | "xl";
   disabled?: boolean;
   className?: string;
   icon?: React.ReactNode;
@@ -14,18 +15,23 @@ interface GameButtonProps {
 const GameButton: React.FC<GameButtonProps> = ({
   children,
   onClick,
-  variant = 'primary',
-  size = 'md',
+  variant = "primary",
+  size = "md",
   disabled = false,
-  className = '',
+  className = "",
   icon,
 }) => {
   return (
     <button
       className={`game-button game-button--${variant} game-button--${size} ${className}`}
-      onClick={disabled ? undefined : onClick}
+      onClick={() => {
+        if (!disabled) {
+          playClickSound();
+          onClick?.();
+        }
+      }}
       disabled={disabled}
-      aria-label={typeof children === 'string' ? children : '按鈕'}
+      aria-label={typeof children === "string" ? children : "按鈕"}
     >
       <div className="game-button__content">
         {icon && <span className="game-button__icon">{icon}</span>}
