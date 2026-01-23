@@ -63,7 +63,7 @@ export const generateMathQuestions = (
         opChar = "×";
         audioOp = "乘以";
         break;
-      case "div":
+      case "div": {
         const divMax = Math.min(12, 3 + Math.floor(levelNumber / 8));
         num2 = Math.floor(Math.random() * divMax) + 2;
         ans = Math.floor(Math.random() * 9) + 1;
@@ -71,6 +71,7 @@ export const generateMathQuestions = (
         opChar = "÷";
         audioOp = "除以";
         break;
+      }
     }
 
     const key = `${num1}${opChar}${num2}`;

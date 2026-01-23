@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LuArrowLeft, LuRefreshCw } from "react-icons/lu";
 import { INITIAL_STICKERS } from "../../types/sticker";
@@ -7,11 +7,7 @@ import "./Stickers.css";
 
 const Stickers: React.FC = () => {
   const navigate = useNavigate();
-  const [ownedIds, setOwnedIds] = useState<string[]>([]);
-
-  useEffect(() => {
-    setOwnedIds(getOwnedStickers());
-  }, []);
+  const [ownedIds, setOwnedIds] = useState<string[]>(() => getOwnedStickers());
 
   const handleReset = () => {
     if (window.confirm("確定要重設所有成就嗎？")) {

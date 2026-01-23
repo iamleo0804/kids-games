@@ -3,13 +3,20 @@
  * 使用 Web Audio API 即時合成音效，無需額外下載音訊檔。
  */
 
+interface WindowWithWebkit extends Window {
+  webkitAudioContext?: typeof AudioContext;
+}
+
 let audioCtx: AudioContext | null = null;
 
 const getAudioCtx = () => {
   if (!audioCtx) {
-    audioCtx = new (
-      window.AudioContext || (window as any).webkitAudioContext
-    )();
+    const windowWithWebkit = window as WindowWithWebkit;
+    const AudioContextClass =
+      window.AudioContext || windowWithWebkit.webkitAudioContext;
+    if (AudioContextClass) {
+      audioCtx = new AudioContextClass();
+    }
   }
   return audioCtx;
 };
@@ -19,6 +26,7 @@ const getAudioCtx = () => {
  */
 export const playCorrectSound = () => {
   const ctx = getAudioCtx();
+  if (!ctx) return;
   const now = ctx.currentTime;
 
   const playNote = (freq: number, startTime: number, duration: number) => {
@@ -51,6 +59,7 @@ export const playCorrectSound = () => {
  */
 export const playIncorrectSound = () => {
   const ctx = getAudioCtx();
+  if (!ctx) return;
   const now = ctx.currentTime;
 
   const osc = ctx.createOscillator();
@@ -75,6 +84,7 @@ export const playIncorrectSound = () => {
  */
 export const playClickSound = () => {
   const ctx = getAudioCtx();
+  if (!ctx) return;
   const now = ctx.currentTime;
 
   const osc = ctx.createOscillator();

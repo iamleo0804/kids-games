@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import GameButton from "../../components/ui/GameButton";
 import {
@@ -11,10 +11,7 @@ import {
 import { INITIAL_STICKERS } from "../../types/sticker";
 import { addSticker } from "../../utils/stickerStorage";
 import { saveLevelProgress } from "../../utils/progressStorage";
-import {
-  generateMathQuestions,
-  type Question,
-} from "../../utils/mathGenerator";
+import { generateMathQuestions } from "../../utils/mathGenerator";
 import { playCorrectSound, playIncorrectSound } from "../../utils/audio";
 import "./QuizPlay.css";
 
@@ -30,21 +27,20 @@ const QuizPlay: React.FC = () => {
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questionSeed, setQuestionSeed] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [newStickerAwarded, setNewStickerAwarded] = useState<string | null>(
     null,
   );
+  const completionHandledRef = useRef(false);
 
-  useEffect(() => {
+  const questions = useMemo(() => {
     if (subjectId === "math" && operation && levelNumber) {
-      const generated = generateMathQuestions(
-        operation,
-        parseInt(levelNumber, 10),
-      );
-      setQuestions(generated);
+      return generateMathQuestions(operation, parseInt(levelNumber, 10));
     }
-  }, [subjectId, operation, levelNumber]);
+    return [];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subjectId, operation, levelNumber, questionSeed]);
 
   const currentQuestion = questions[currentIndex];
 
@@ -55,7 +51,9 @@ const QuizPlay: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isCompleted) {
+    if (isCompleted && !completionHandledRef.current) {
+      completionHandledRef.current = true;
+      
       if (subjectId === "math" && operation && levelNumber) {
         if (score >= 80) {
           saveLevelProgress(
@@ -65,7 +63,10 @@ const QuizPlay: React.FC = () => {
           );
         }
         const added = addSticker("math-star-1");
-        if (added) setNewStickerAwarded("math-star-1");
+        if (added) {
+          setNewStickerAwarded("math-star-1");
+          return;
+        }
       }
       if (score === 100) {
         const added = addSticker("perfect-score");
@@ -107,13 +108,8 @@ const QuizPlay: React.FC = () => {
     setIsAnswered(false);
     setIsCompleted(false);
     setNewStickerAwarded(null);
-    if (subjectId === "math" && operation && levelNumber) {
-      const generated = generateMathQuestions(
-        operation,
-        parseInt(levelNumber, 10),
-      );
-      setQuestions(generated);
-    }
+    completionHandledRef.current = false;
+    setQuestionSeed((s) => s + 1);
   };
 
   const handleNextLevel = () => {
@@ -128,6 +124,7 @@ const QuizPlay: React.FC = () => {
       setIsAnswered(false);
       setIsCompleted(false);
       setNewStickerAwarded(null);
+      completionHandledRef.current = false;
     }
   };
 

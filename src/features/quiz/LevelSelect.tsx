@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { LuArrowLeft, LuLock, LuCheck } from "react-icons/lu";
 import { getLevelProgress } from "../../utils/progressStorage";
@@ -10,18 +10,17 @@ const LevelSelect: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"add" | "sub" | "mul" | "div">(
     "add",
   );
-  const [currentProgress, setCurrentProgress] = useState(1);
+  const currentProgress = useMemo(
+    () => getLevelProgress(subjectId || "math", activeTab),
+    [subjectId, activeTab],
+  );
 
   const operations = [
     { id: "add", name: "加法", variant: "primary" as const },
     { id: "sub", name: "減法", variant: "secondary" as const },
     { id: "mul", name: "乘法", variant: "success" as const },
     { id: "div", name: "除法", variant: "accent" as const },
-  ];
-
-  useEffect(() => {
-    setCurrentProgress(getLevelProgress(subjectId || "math", activeTab));
-  }, [subjectId, activeTab]);
+  ] as const;
 
   const handleSelectLevel = (levelNumber: number) => {
     if (levelNumber <= currentProgress) {
@@ -46,7 +45,7 @@ const LevelSelect: React.FC = () => {
           <button
             key={op.id}
             className={`op-tab op-tab--${op.variant} ${activeTab === op.id ? "is-active" : ""}`}
-            onClick={() => setActiveTab(op.id as any)}
+            onClick={() => setActiveTab(op.id)}
           >
             {op.name}
           </button>
